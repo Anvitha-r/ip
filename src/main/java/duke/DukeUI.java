@@ -1,6 +1,5 @@
 package duke;
 
-import tasks.Task;
 import tasks.TasksManager;
 
 public class DukeUI {
@@ -154,8 +153,5 @@ public class DukeUI {
 
     protected void printTodoMissingDescription() {
         System.out.println(DukeUI.todo_missing_parameters);
-    }
-
-    public void printAddTaskResponseMessage(Task newTask) {
     }
 }
