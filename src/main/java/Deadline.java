@@ -1,4 +1,6 @@
 public class Deadline extends Task {
+    private static final int deadline_description = 0;
+    private static final int deadline_date = 1;
     private String dueDate;
     private static final String deadline_checkbox = "[D]";
 
@@ -6,11 +8,13 @@ public class Deadline extends Task {
         super(description);
         this.dueDate = dueDate;
     }
-
+    public Deadline(String[] descriptionAndDate) {
+        super(descriptionAndDate[deadline_description]);
+        this.dueDate = descriptionAndDate[deadline_date];
+    }
     public String getDueDate() {
         return dueDate;
     }
-
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }

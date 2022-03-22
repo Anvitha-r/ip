@@ -4,12 +4,18 @@ public class Duke {
     TasksManager tasksManager;
     DukeUI dukeUI = new DukeUI();
     DukeReader dukeReader;
+    private DukeExceptionHandler exceptionHandler;
 
     protected Duke() {
         // Instantiate components
+        dukeUI = new DukeUI();
         tasksManager = new TasksManager();
         dukeReader = new DukeReader();
+        exceptionHandler = new DukeExceptionHandler(dukeUI);
+
+        //greet the user
         dukeUI.printGreetings();
+
 
     }
     protected boolean doesUserWantsToExit() {
@@ -18,7 +24,10 @@ public class Duke {
 
     protected void setUserWantsToExit() {
         this.userWantsToExit = true;
+    }
 
+    protected TasksManager getTasksManager() {
+        return this.tasksManager;
     }
 
     protected void startContinuousUserPrompt() {
@@ -40,52 +49,49 @@ public class Duke {
     }
 
         private void executeCommand(String userRawInput) {
-            if (userRawInput.equalsIgnoreCase(DukeUI.exit_command)) {
-                // Set userWantsToExit to true and return to calling method
-                setUserWantsToExit();
-            } else if (userRawInput.equalsIgnoreCase(DukeUI.list_command)) {
-                // Display the task list
-                DukeUI.displayTaskList(tasksManager);
-            } else if (userRawInput.toLowerCase().startsWith(DukeUI.mark_command)) {
-                // Obtain task number
-                int taskNum = Integer.parseInt(userRawInput.split(" ")[1]);
-                boolean markSuccess = tasksManager.updateDoneStatus(taskNum, true);
+            String userCommand = extractCommand(userRawInput);
 
-                if (markSuccess) {
-
-                    tasksManager.displayTask(taskNum);
-                    System.out.println();
-                } else {
-                    System.out.println("Oops sorry, I couldn't mark that task as done.");
-
+            try {
+                switch (userCommand) {
+                    case DukeUI.exit_command:
+                        setUserWantsToExit();
+                        break;
+                    case DukeUI.list_command:
+                        dukeUI.displayTaskList(getTasksManager());
+                        break;
+                    case DukeUI.mark_command:
+                        int taskNum = getTaskNumberFromCommand(userRawInput);
+                        boolean markSuccess = getTasksManager().updateDoneStatus(taskNum, true);
+                        dukeUI.printMarkTaskResponseMessage(markSuccess, getTasksManager(), taskNum);
+                        break;
+                    case DukeUI.unmark_command:
+                        taskNum = getTaskNumberFromCommand(userRawInput);
+                        boolean unmarkSuccess = getTasksManager().updateDoneStatus(taskNum, false);
+                        dukeUI.printUnmarkTaskResponseMessage(unmarkSuccess, getTasksManager(), taskNum);
+                        break;
+                    case DukeUI.todo_command:
+                        // Fallthrough
+                    case DukeUI.event_command:
+                        // Fallthrough
+                    case DukeUI.deadline_command:
+                        boolean addSuccess = getTasksManager().addTask(userRawInput);
+                        dukeUI.printAddTaskResponseMessage(addSuccess, getTasksManager());
+                        break;
+                    default:
+                        throw new InvalidCommandException(InvalidCommandException.no_such_command_msg);
                 }
-            } else if (userRawInput.toLowerCase().startsWith(DukeUI.unmark_command)) {
-                // Obtain task number
-                int taskNum = Integer.parseInt(userRawInput.split(" ")[1]);
-                boolean unmarkSuccess = tasksManager.updateDoneStatus(taskNum, false);
-
-                if (unmarkSuccess) {
-
-                    tasksManager.displayTask(taskNum);
-                    System.out.println();
-                } else {
-                    System.out.println("Oops, I couldn't mark that task as not done.");
-                    System.out.println("Sorry about that... (-ω-、)");
-                }
-            } else if (userRawInput.toLowerCase().startsWith(DukeUI.todo_command) ||
-                    userRawInput.toLowerCase().startsWith(DukeUI.event_command) ||
-                    userRawInput.toLowerCase().startsWith(DukeUI.deadline_command)){
-                // Add text to list
-                boolean isSuccess = tasksManager.addTask(userRawInput);
-
-                if (isSuccess) {
-                    System.out.println("I have added your new task to my list.");
-                } else {
-                    System.out.println("Oops sorry! Somehow I wasn't able to add your text to my list.");
-                }
-            } else {
-                System.out.println("Oops sorry! I can't understand what you've just typed.");
-                System.out.println("Could you try again?");
+            } catch (InvalidCommandException e) {
+                // TODO: Create method to handle exception
+                exceptionHandler.handleInvalidCommandException(e);
             }
         }
+
+    private String extractCommand(String userRawInput) {
+        String userCommand = userRawInput.toLowerCase().split(" ", 2)[0];
+        return userCommand;
+    }
+    private int getTaskNumberFromCommand(String userRawInput) {
+        int taskNum = Integer.parseInt(userRawInput.split(" ")[1]);
+        return taskNum;
+    }
     }

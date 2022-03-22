@@ -29,37 +29,70 @@ public class TasksManager {
         this.numberOfTasks += 1;
     }
 
-    public boolean addTask(String text) {
-        //create new task object
-        boolean isSuccessful = false;
+    public boolean addTask(String text) throws InvalidCommandException {
+        // Create new Task object with text
+        boolean isTaskAdded;
+        String taskType = extractTaskType(text);
 
-        if (text.toLowerCase().startsWith(DukeUI.todo_command)) {
-            // Extract the to-do task description
-            String todoDescription = text.split(" ", 2)[1];
-
-            isSuccessful = list.add(new Todo(todoDescription));
-        } else if (text.toLowerCase().startsWith(DukeUI.event_command)) {
-            // Extract the event task description and date
-            String eventDescriptionAndDate = text.split(" ", 2)[1];
-            String eventDescription = eventDescriptionAndDate.split(DukeUI.event_option_command)[0].trim();
-            String eventDate = eventDescriptionAndDate.split(DukeUI.event_option_command)[1].trim();
-
-            isSuccessful = list.add(new Event(eventDescription, eventDate));
-        } else if (text.toLowerCase().startsWith(DukeUI.deadline_command)) {
-            // Extract the deadline task description and date
-            String deadlineDescriptionAndDate = text.split(" ", 2)[1];
-            String deadlineDescription = deadlineDescriptionAndDate.split(DukeUI.deadline_option_command)[0].trim();
-            String deadlineDate = deadlineDescriptionAndDate.split(DukeUI.deadline_option_command)[1].trim();
-
-            isSuccessful = list.add(new Deadline(deadlineDescription, deadlineDate));
+        try {
+            switch (taskType) {
+                case DukeUI.todo_command:
+                    checkTodoCommand(text);
+                    String todoDescription = removeCommandKeyword(text);
+                    isTaskAdded = list.add(new Todo(todoDescription));
+                    break;
+                case DukeUI.event_option_command:
+                    String[] eventDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.event_option_command);
+                    isTaskAdded = list.add(new Event(eventDescriptionAndDate));
+                    break;
+                case DukeUI.deadline_command:
+                    String[] deadlineDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.deadline_option_command);
+                    isTaskAdded = list.add(new Deadline(deadlineDescriptionAndDate));
+                    break;
+                default:
+                    isTaskAdded = false;
+            }
+        } catch (InvalidCommandException e) {
+            // Rethrow it to caller method
+            throw e;
         }
 
-        if (isSuccessful) {
+
+        if (isTaskAdded) {
             incrementNumberOfTasks();
             return true;
         }
-
         return false;
+    }
+
+    private void checkTodoCommand(String todoCommand) throws InvalidCommandException {
+        // Check if command has a description
+        String[] commandAndDescription = todoCommand.split(" ", 2);
+
+        if (commandAndDescription.length < 2) {
+            throw new InvalidCommandException(InvalidCommandException.todo_description_msg);
+        }
+
+        // Checks are complete, the command is okay. Method will return to caller.
+    }
+
+    private String extractTaskType(String text) {
+        String taskType = text.toLowerCase().split(" ", 2)[0];
+        return taskType;
+    }
+
+    private String removeCommandKeyword(String text) {
+        String description = text.split(" ", 2)[1];
+        return description;
+    }
+
+    private String[] extractDescriptionAndDate(String text, String optionKeyword) {
+        String taskDescriptionAndDateString = removeCommandKeyword(text);
+        String[] taskDescriptionAndDate = new String[2];
+        for (int i = 0; i < taskDescriptionAndDate.length; i += 1) {
+            taskDescriptionAndDate[i] = taskDescriptionAndDateString.split(optionKeyword)[i].trim();
+        }
+        return taskDescriptionAndDate;
     }
 
     public boolean updateDoneStatus(int taskNum, boolean status) {
@@ -67,28 +100,28 @@ public class TasksManager {
         if (isEmpty()) {
             return false;
         }
-
-        // Iterate through the task list to find the task
-        for (int i = 0; i < getList().size(); i += 1) {
-            if (i == taskNum - 1) {
-                // Task found, mark as desired status
-                getList().get(i).setDone(status);
-                return true;
-            }
-        }
-
-        // Failed to find task
-        return false;
+        // Calculate index number of task in the ArrayList
+        int indexNum = taskNum - 1;
+        // Update the task status
+        getList().get(indexNum).setDone(status);
+        return true;
     }
 
     public void displayTask(int taskNum) {
         if (isEmpty()) {
             return;
         }
-
         int taskIndex = taskNum - 1;
         Task taskToDisplay = getList().get(taskIndex);
+        System.out.println("\t" + taskToDisplay.toString());
+    }
 
+    public void displayLastAddedTask() {
+        if (isEmpty()) {
+            return;
+        }
+        int taskIndex = getNumberOfTasks() - 1;
+        Task taskToDisplay = getList().get(taskIndex);
         System.out.println("\t" + taskToDisplay.toString());
     }
 
@@ -96,7 +129,6 @@ public class TasksManager {
         if (isEmpty()) {
             return;
         }
-
         for (int i = 0; i < getList().size(); i += 1) {
             System.out.println("\t" + (i + 1) + "." + getList().get(i).toString());
         }

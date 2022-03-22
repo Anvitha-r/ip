@@ -26,7 +26,57 @@ public class DukeUI {
     protected static final String deadline_option_command = "/by";
     protected static final String mark_command = "mark";
     protected static final String unmark_command = "unmark";
+    protected static final String empty_list_response =
+            "%s, Here's a list of tasks that you have given to me:\n";
+    protected static final String empty_list =
+            "The list is empty at the moment.";
+    protected static final String add_task_success =
+            "%s, I've added your new task to my list:\n";
+    protected static final String add_task_failed =
+            "Oops sorry! Somehow I wasn't able to add your task to my list";
+    protected static final String mark_success =
+            "%s, I've marked this task as done:\n";
+    protected static final String mark_failed =
+            "Oops sorry, I couldn't mark that task as done.";
+    protected static final String unmark_success =
+            "%s, I've marked this task as not done:\n";
+    protected static final String unmark_failed =
+            "Oops sorry, I couldn't mark that task as not done.";
 
+    protected static final String command_not_understood =
+            "Oops! I can't understand what you've just typed...\nCould you try again?";
+    protected static final String todo_missing_parameters =
+            "Hmmm, seems like you didn't give me a description for your\ntodo, please try again";
+
+
+
+    protected void printMarkTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager, int taskNum) {
+        if (isSuccessful) {
+            tasksManager.displayTask(taskNum);
+            System.out.println();
+            return;
+        }
+        // Mark task was unsuccessful
+        System.out.println(DukeUI.mark_failed);
+    }
+    protected void printUnmarkTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager, int taskNum) {
+        if (isSuccessful) {
+            tasksManager.displayTask(taskNum);
+            System.out.println();
+            return;
+        }
+        // Unmark task was unsuccessful
+        System.out.println(DukeUI.unmark_failed);
+    }
+    protected void printAddTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager) {
+        if (isSuccessful) {
+            tasksManager.displayLastAddedTask();
+            System.out.println();
+            return;
+        }
+        // Adding task was unsuccessful
+        System.out.println(DukeUI.add_task_failed);
+    }
     public static void displayTaskList(TasksManager tasksManager) {
         // Check if the task list is empty
         if (tasksManager.isEmpty()) {
@@ -74,5 +124,13 @@ public class DukeUI {
             printLine();
             System.out.print(prompt_symbol + " ");
         }
+    }
+
+    protected void printCommandNotUnderstood() {
+        System.out.println(DukeUI.command_not_understood);
+    }
+
+    protected void printTodoMissingDescription() {
+        System.out.println(DukeUI.todo_missing_parameters);
     }
 }
