@@ -155,4 +155,7 @@ public class DukeUI {
     protected void printTodoMissingDescription() {
         System.out.println(DukeUI.todo_missing_parameters);
     }
+
+    public void printAddTaskResponseMessage(Task newTask) {
+    }
 }
