@@ -1,4 +1,6 @@
 package duke;
+import java.io.IOException;
+import tasks.Task;
 import tasks.TasksManager;
 
 import duke.InvalidCommandException;
@@ -10,7 +12,7 @@ public class Duke {
     DukeReader dukeReader;
     private DukeExceptionHandler exceptionHandler;
 
-    public Duke() {
+    public Duke() throws IOException {
         // Instantiate components
         dukeUI = new DukeUI();
         tasksManager = new TasksManager();
@@ -19,6 +21,14 @@ public class Duke {
 
         //greet the user
         dukeUI.printGreetings();
+
+        // Load saved task list from file
+        try {
+            dukeReader.loadTaskListFromFile(getTasksManager());
+        } catch (IOException e) {
+            // Throw to caller method to handle to exit
+            throw e;
+        }
 
 
     }
@@ -78,14 +88,16 @@ public class Duke {
                     case DukeUI.event_command:
                         // Fallthrough
                     case DukeUI.deadline_command:
-                        boolean addSuccess = getTasksManager().addTask(userRawInput);
-                        dukeUI.printAddTaskResponseMessage(addSuccess, getTasksManager());
+                        Task newTask = getTasksManager().addTask(userRawInput);
+                        // Update file
+                        dukeReader.writeNewTaskToFile(newTask);
+                        // Print response
+                        dukeUI.printAddTaskResponseMessage(newTask);
                         break;
                     default:
                         throw new InvalidCommandException(InvalidCommandException.no_such_command_msg);
                 }
-            } catch (InvalidCommandException e) {
-                // TODO: Create method to handle exception
+            } catch (InvalidCommandException | IOException e) {
                 exceptionHandler.handleInvalidCommandException(e);
             }
         }

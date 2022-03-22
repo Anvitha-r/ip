@@ -1,7 +1,5 @@
 package duke;
 
-import duke.InvalidCommandException;
-
 public class DukeExceptionHandler {
 
     // Allows SoraExceptionHandler to provide UI outputs to the user
@@ -15,7 +13,7 @@ public class DukeExceptionHandler {
 
     }
 
-    public void handleInvalidCommandException(InvalidCommandException e) {
+    public void handleInvalidCommandException(Exception e) {
 
         String errorMessage = e.getMessage();
 

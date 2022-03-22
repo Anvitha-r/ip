@@ -1,10 +1,16 @@
 import duke.Duke;
+import java.io.IOException;
 
 
 public class Main {
     public static void main(String[] args) {
         // Start Sora
-        Duke duke = new Duke();
-        duke.startContinuousUserPrompt();
+        try {
+            Duke duke = new Duke();
+            duke.startContinuousUserPrompt();
+        } catch(IOException e){
+            // Exit application
+            System.exit(-1);
+        }
     }
 }
