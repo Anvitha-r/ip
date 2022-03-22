@@ -1,22 +1,16 @@
 package tasks;
 import duke.DukeUI;
-import duke.DukeReader;
 import duke.InvalidCommandException;
 
 import java.util.ArrayList;
 
 public class TasksManager {
-    public static final int FILE_DATA_TASK_TYPE_INDEX_NUM = 0;
-    public static final int FILE_DATA_DESCRIPTION_INDEX_NUM = 2;
-
-
     private ArrayList<Task> list;
     private int numberOfTasks;
-    DukeReader dukeReader;
 
     public TasksManager() {
         this.list = new ArrayList<Task>();
-        this.numberOfTasks += 1;
+        this.numberOfTasks = 0;
     }
 
     public ArrayList<Task> getList() {
@@ -39,9 +33,9 @@ public class TasksManager {
         this.numberOfTasks += 1;
     }
 
-    public Task addTask(String text) throws InvalidCommandException {
+    public boolean addTask(String text) throws InvalidCommandException {
         // Create new tasks.Task object with text
-        Task newTask = null;
+        boolean isTaskAdded;
         String taskType = extractTaskType(text);
 
         try {
@@ -49,20 +43,18 @@ public class TasksManager {
                 case DukeUI.todo_command:
                     checkTodoCommand(text);
                     String todoDescription = removeCommandKeyword(text);
-                    newTask = new Todo(todoDescription);
-                    list.add(newTask);
+                    isTaskAdded = list.add(new Todo(todoDescription));
                     break;
                 case DukeUI.event_option_command:
                     String[] eventDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.event_option_command);
-                    newTask = new Event(eventDescriptionAndDate);
-                    list.add(newTask);
+                    isTaskAdded = list.add(new Event(eventDescriptionAndDate));
                     break;
                 case DukeUI.deadline_command:
                     String[] deadlineDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.deadline_option_command);
-                    newTask = new Deadline(deadlineDescriptionAndDate);
-                    list.add(newTask);
+                    isTaskAdded = list.add(new Deadline(deadlineDescriptionAndDate));
                     break;
                 default:
+                    isTaskAdded = false;
             }
         } catch (InvalidCommandException e) {
             // Rethrow it to caller method
@@ -70,59 +62,12 @@ public class TasksManager {
         }
 
 
-        incrementNumberOfTasks();
-
-        return newTask;
-    }
-
-    public void addTask(String[] taskDataFromFile) {
-        String type;
-        String description;
-        String flag;
-        String flagValue;
-        String isDoneValue = taskDataFromFile[1];
-        boolean isDone = (isDoneValue.equals("1")) ? true : false;
-
-        // Get details of task
-        type = getTaskType(taskDataFromFile[FILE_DATA_TASK_TYPE_INDEX_NUM]);
-        description = taskDataFromFile[FILE_DATA_DESCRIPTION_INDEX_NUM];
-
-
-        // Craft the command to add task to list
-        StringBuilder commandBuilder = new StringBuilder(type + " " + description);
-
-
-        String newTaskCommand = commandBuilder.toString();
-
-        // Add the task to the list
-        try {
-            addTask(newTaskCommand);
-        } catch (InvalidCommandException e) {
-            System.out.println("Oh no! I failed to add a task from the saved data file to my task list.");
-            System.out.println("Here's some details about the error: ");
-            System.out.println("\t" + e.getMessage());
-
+        if (isTaskAdded) {
+            incrementNumberOfTasks();
+            return true;
         }
-
-        // If task is marked as done in the file, reflect it in Sora's task list
-        if (isDone) {
-            updateDoneStatus(getNumberOfTasks(), true);
-        }
+        return false;
     }
-
-    private String getTaskType(String abbreviation) {
-        switch (abbreviation) {
-            case DukeReader.TODO_TYPE_FILE_ABBREVIATION:
-                return DukeUI.todo_command;
-            case DukeReader.EVENT_TYPE_FILE_ABBREVIATION:
-                return DukeUI.event_command;
-            case DukeReader.DEADLINE_TYPE_FILE_ABBREVIATION:
-                return DukeUI.deadline_command;
-            default:
-                return "";
-        }
-    }
-
 
     private void checkTodoCommand(String todoCommand) throws InvalidCommandException {
         // Check if command has a description
