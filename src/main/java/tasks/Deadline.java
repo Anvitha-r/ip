@@ -1,3 +1,5 @@
+package tasks;
+
 public class Deadline extends Task {
     private static final int deadline_description = 0;
     private static final int deadline_date = 1;

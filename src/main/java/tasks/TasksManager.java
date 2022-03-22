@@ -1,3 +1,7 @@
+package tasks;
+import duke.DukeUI;
+import duke.InvalidCommandException;
+
 import java.util.ArrayList;
 
 public class TasksManager {
@@ -30,7 +34,7 @@ public class TasksManager {
     }
 
     public boolean addTask(String text) throws InvalidCommandException {
-        // Create new Task object with text
+        // Create new tasks.Task object with text
         boolean isTaskAdded;
         String taskType = extractTaskType(text);
 

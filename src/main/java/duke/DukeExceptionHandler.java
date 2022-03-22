@@ -1,3 +1,7 @@
+package duke;
+
+import duke.InvalidCommandException;
+
 public class DukeExceptionHandler {
 
     // Allows SoraExceptionHandler to provide UI outputs to the user

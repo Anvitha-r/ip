@@ -1,3 +1,7 @@
+package duke;
+
+import tasks.TasksManager;
+
 public class DukeUI {
 
     protected static final String logo
@@ -15,37 +19,37 @@ public class DukeUI {
     /**
      * List of command keywords
      */
-    protected static final String exit_command = "bye";
+    public static final String exit_command = "bye";
 
-    protected static final String list_command = "list";
+    public static final String list_command = "list";
 
-    protected static final String todo_command = "todo";
-    protected static final String event_command = "event";
-    protected static final String event_option_command = "/at";
-    protected static final String deadline_command = "deadline";
-    protected static final String deadline_option_command = "/by";
-    protected static final String mark_command = "mark";
-    protected static final String unmark_command = "unmark";
-    protected static final String empty_list_response =
+    public static final String todo_command = "todo";
+    public static final String event_command = "event";
+    public static final String event_option_command = "/at";
+    public static final String deadline_command = "deadline";
+    public static final String deadline_option_command = "/by";
+    public static final String mark_command = "mark";
+    public static final String unmark_command = "unmark";
+    public static final String empty_list_response =
             "%s, Here's a list of tasks that you have given to me:\n";
-    protected static final String empty_list =
+    public static final String empty_list =
             "The list is empty at the moment.";
-    protected static final String add_task_success =
+    public static final String add_task_success =
             "%s, I've added your new task to my list:\n";
-    protected static final String add_task_failed =
+    public static final String add_task_failed =
             "Oops sorry! Somehow I wasn't able to add your task to my list";
-    protected static final String mark_success =
+    public static final String mark_success =
             "%s, I've marked this task as done:\n";
-    protected static final String mark_failed =
+    public static final String mark_failed =
             "Oops sorry, I couldn't mark that task as done.";
-    protected static final String unmark_success =
+    public static final String unmark_success =
             "%s, I've marked this task as not done:\n";
-    protected static final String unmark_failed =
+    public static final String unmark_failed =
             "Oops sorry, I couldn't mark that task as not done.";
 
-    protected static final String command_not_understood =
+    public static final String command_not_understood =
             "Oops! I can't understand what you've just typed...\nCould you try again?";
-    protected static final String todo_missing_parameters =
+    public static final String todo_missing_parameters =
             "Hmmm, seems like you didn't give me a description for your\ntodo, please try again";
 
 

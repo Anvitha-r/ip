@@ -1,3 +1,7 @@
+package duke;
+import tasks.TasksManager;
+
+import duke.InvalidCommandException;
 
 public class Duke {
     private boolean userWantsToExit = false;
@@ -6,7 +10,7 @@ public class Duke {
     DukeReader dukeReader;
     private DukeExceptionHandler exceptionHandler;
 
-    protected Duke() {
+    public Duke() {
         // Instantiate components
         dukeUI = new DukeUI();
         tasksManager = new TasksManager();
@@ -30,7 +34,7 @@ public class Duke {
         return this.tasksManager;
     }
 
-    protected void startContinuousUserPrompt() {
+    public void startContinuousUserPrompt() {
         boolean isFirstPrompt = true;
 
         while (!doesUserWantsToExit()) {

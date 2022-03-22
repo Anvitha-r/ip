@@ -1,3 +1,5 @@
+package tasks;
+
 public class Event extends Task {
     private static final int event_description = 0;
     private static final int event_period = 1;
