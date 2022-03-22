@@ -46,10 +46,12 @@ public class TasksManager {
                     isTaskAdded = list.add(new Todo(todoDescription));
                     break;
                 case DukeUI.event_option_command:
+                    checkEventCommand(text);
                     String[] eventDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.event_option_command);
                     isTaskAdded = list.add(new Event(eventDescriptionAndDate));
                     break;
                 case DukeUI.deadline_command:
+                    checkDeadlineCommand(text);
                     String[] deadlineDescriptionAndDate = extractDescriptionAndDate(text, DukeUI.deadline_option_command);
                     isTaskAdded = list.add(new Deadline(deadlineDescriptionAndDate));
                     break;
@@ -79,6 +81,30 @@ public class TasksManager {
 
         // Checks are complete, the command is okay. Method will return to caller.
     }
+
+    private void checkEventCommand(String eventCommand) throws InvalidCommandException {
+        // Check if user input has a description
+        String[] splitByFlag = eventCommand.split("/at");
+        String[] commandAndDescription = splitByFlag[0].split(" ", 2);
+        if (commandAndDescription.length < 2) {
+            // User input has no description
+            throw new InvalidCommandException(InvalidCommandException.event_invalid_msg);
+        }
+        // Check if user input has the correct flag
+        if (!eventCommand.contains("/at")) {
+            throw new InvalidCommandException(InvalidCommandException.event_missing_flag_msg);
+        }
+        // Check if user input has a date period
+        if (splitByFlag.length < 2) {
+            // User input has no date period
+            throw new InvalidCommandException(InvalidCommandException.event_missing_flag_msg);
+        }
+        // Checks are complete, the command is okay. Method will return to caller.
+    }
+    private void checkDeadlineCommand(String deadlineUserInput) throws InvalidCommandException {
+
+    }
+
 
     private String extractTaskType(String text) {
         String taskType = text.toLowerCase().split(" ", 2)[0];
@@ -111,17 +137,35 @@ public class TasksManager {
         return true;
     }
 
+    public Task deleteTask(int taskNum) {
+        if (isEmpty()) {
+            System.out.println("Please enter task");
+        }
+        // Calculate index number of task in the ArrayList
+        int indexNum = taskNum - 1;
+        // Remove the task from the list
+        Task taskRemoved = getList().remove(indexNum);
+        return taskRemoved;
+    }
+
     public void displayTask(int taskNum) {
         if (isEmpty()) {
+            System.out.println("please enter a task");
             return;
         }
+
         int taskIndex = taskNum - 1;
         Task taskToDisplay = getList().get(taskIndex);
         System.out.println("\t" + taskToDisplay.toString());
     }
 
+    public void displayTask(Task taskObject) {
+        System.out.println("\t" + taskObject.toString());
+    }
+
     public void displayLastAddedTask() {
         if (isEmpty()) {
+            System.out.println("Please enter a task");
             return;
         }
         int taskIndex = getNumberOfTasks() - 1;

@@ -18,9 +18,6 @@ public class Task {
         return this.description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public boolean isDone() {
         return this.isDone;

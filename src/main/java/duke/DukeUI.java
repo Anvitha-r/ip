@@ -30,6 +30,8 @@ public class DukeUI {
     public static final String deadline_option_command = "/by";
     public static final String mark_command = "mark";
     public static final String unmark_command = "unmark";
+    public static final String delete_command = "delete";
+
     public static final String empty_list_response =
             "%s, Here's a list of tasks that you have given to me:\n";
     public static final String empty_list =
@@ -46,6 +48,10 @@ public class DukeUI {
             "%s, I've marked this task as not done:\n";
     public static final String unmark_failed =
             "Oops sorry, I couldn't mark that task as not done.";
+    protected static final String delete_success =
+            "%s, I've deleted this task:\n";
+    protected static final String delete_failed =
+            "%s, Sorry I couldn't delete this task.";
 
     public static final String command_not_understood =
             "Oops! I can't understand what you've just typed...\nCould you try again?";
@@ -56,6 +62,7 @@ public class DukeUI {
 
     protected void printMarkTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager, int taskNum) {
         if (isSuccessful) {
+            //System.out.printf(DukeUI.mark_success);
             tasksManager.displayTask(taskNum);
             System.out.println();
             return;
@@ -65,6 +72,7 @@ public class DukeUI {
     }
     protected void printUnmarkTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager, int taskNum) {
         if (isSuccessful) {
+            //System.out.printf(DukeUI.unmark_success);
             tasksManager.displayTask(taskNum);
             System.out.println();
             return;
@@ -74,6 +82,7 @@ public class DukeUI {
     }
     protected void printAddTaskResponseMessage(boolean isSuccessful, TasksManager tasksManager) {
         if (isSuccessful) {
+            //System.out.printf(DukeUI.add_task_success);
             tasksManager.displayLastAddedTask();
             System.out.println();
             return;
@@ -81,6 +90,14 @@ public class DukeUI {
         // Adding task was unsuccessful
         System.out.println(DukeUI.add_task_failed);
     }
+
+    protected void printDeleteTaskResponseMessage(Task taskRemoved, TasksManager tasksManager) {
+        //System.out.printf(DukeUI.delete_success);
+        System.out.println();
+        tasksManager.displayTask(taskRemoved);
+        System.out.println();
+    }
+
     public static void displayTaskList(TasksManager tasksManager) {
         // Check if the task list is empty
         if (tasksManager.isEmpty()) {

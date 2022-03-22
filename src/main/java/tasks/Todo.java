@@ -1,13 +1,10 @@
 package tasks;
 
-
-
 public class Todo extends Task {
 
     private static final String todo_checkbox = "[T]";
 
     public Todo(String description) {
-
         super(description);
 
     }
