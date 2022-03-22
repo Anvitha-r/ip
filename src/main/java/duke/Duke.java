@@ -1,13 +1,19 @@
 package duke;
+import tasks.Task;
 import tasks.TasksManager;
+
+
 
 import duke.InvalidCommandException;
 
 public class Duke {
+
+    private boolean isUserExiting = false;
+
     private boolean userWantsToExit = false;
-    TasksManager tasksManager;
-    DukeUI dukeUI = new DukeUI();
-    DukeReader dukeReader;
+    private TasksManager tasksManager;
+    private DukeUI dukeUI = new DukeUI();
+    private DukeReader dukeReader;
     private DukeExceptionHandler exceptionHandler;
 
     public Duke() {
@@ -23,11 +29,11 @@ public class Duke {
 
     }
     protected boolean doesUserWantsToExit() {
-        return this.userWantsToExit;
+        return this.isUserExiting;
     }
 
     protected void setUserWantsToExit() {
-        this.userWantsToExit = true;
+        this.isUserExiting = true;
     }
 
     protected TasksManager getTasksManager() {
@@ -72,6 +78,11 @@ public class Duke {
                         taskNum = getTaskNumberFromCommand(userRawInput);
                         boolean unmarkSuccess = getTasksManager().updateDoneStatus(taskNum, false);
                         dukeUI.printUnmarkTaskResponseMessage(unmarkSuccess, getTasksManager(), taskNum);
+                        break;
+                    case DukeUI.delete_command:
+                        taskNum = getTaskNumberFromCommand(userRawInput);
+                        Task taskRemoved = getTasksManager().deleteTask(taskNum);
+                        dukeUI.printDeleteTaskResponseMessage(taskRemoved, getTasksManager());
                         break;
                     case DukeUI.todo_command:
                         // Fallthrough

@@ -11,8 +11,8 @@ public class InvalidCommandException extends Exception {
     public static final String todo_description_msg = "no description for todo command";
     public static final String event_invalid_msg = "flag used for event command was invalid";
     public static final String event_missing_flag_msg = "required flag for event command was not found";
-    public static final String deadline_invalid_msg = "flag used for deadline command was invalid";
-    public static final String deadline_missing_flag_msg = "required flag for deadline command was not found";
+    //public static final String deadline_invalid_msg = "flag used for deadline command was invalid";
+    //public static final String deadline_missing_flag_msg = "required flag for deadline command was not found";
 
     private String expectedValue;
     private String receivedValue;
